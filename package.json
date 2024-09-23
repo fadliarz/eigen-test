@@ -5,9 +5,9 @@
   "scripts": {
     "test": "jest --verbose --runInBand",
     "dev": "tsc-watch --onSuccess \"node ./dist/src/main.js\"",
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "start": "node dist/src/main.js",
-    "vercel-build": "prisma generate && tsc"
+    "vercel-build": "rimraf dist && tsc"
   },
   "keywords": [],
   "author": "",
