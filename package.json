@@ -7,7 +7,7 @@
     "dev": "tsc-watch --onSuccess \"node ./dist/src/main.js\"",
     "build": "tsc",
     "start": "node dist/src/main.js",
-    "vercel-build": "tsc && prisma generate"
+    "vercel-build": "prisma generate && tsc"
   },
   "keywords": [],
   "author": "",
