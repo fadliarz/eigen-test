@@ -1,0 +1,41 @@
+services:
+  nodeapp:
+    container_name: eigen-nodeapp
+    hostname: nodeapp
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./:/home/node/app
+      - /home/node/app/node_modules
+    env_file:
+      - .env
+    environment:
+      POSTGRES_URL: postgresql://eigen:rootpassword@postgresql:5432/db?connection_limit=9
+      POSTGRES_URL_NON_POOLING: postgresql://eigen:rootpassword@postgresql:5432/lms
+      PORT: 8001
+    ports:
+      - 8001:8001
+    depends_on:
+      - postgres
+    networks:
+      - eigen-network
+  postgres:
+    container_name: eigen-postgresql
+    hostname: postgresql
+    image: postgres:16.1-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: eigen
+      POSTGRES_USERNAME: eigen
+      POSTGRES_PASSWORD: rootpassword
+    ports:
+      - 9001:5432
+    networks:
+      - eigen-network
+networks:
+  eigen-network:
+    driver: bridge

@@ -1,0 +1,192 @@
+openapi: 3.0.0
+info:
+  title: Learning Management System (LMS)
+  description: REST v1 API Documentation
+  version: 1.0.0
+components:
+  responses:
+    CommonErrorResponses:
+      "400":
+        description: Bad request.
+      "403":
+        description: Unauthorized.
+      "401":
+        description: Unauthenticated.
+      "500":
+        description: Unexpected error.
+  schemas:
+    MemberModel:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        penaltyUntil:
+          type: string
+          format: date
+          nullable: true
+        loanCount:
+          type: integer
+        version:
+          type: integer
+
+    BookModel:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        stock:
+          type: integer
+        version:
+          type: integer
+
+    LoanModel:
+      type: object
+      properties:
+        id:
+          type: integer
+        bookCode:
+          type: string
+        memberCode:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date
+
+    #
+    # > Dto <
+    #
+    LoanBookDto:
+      type: object
+      properties:
+        bookCode:
+          type: string
+
+    ReturnBookDto:
+      type: object
+      properties:
+        bookCode:
+          type: string
+
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+paths:
+
+  #
+  # > Member APIs
+  #
+  /api/v1/members:
+    get:
+      tags:
+        - Member
+      summary: Get members.
+      responses:
+        allOf:
+          - "200":
+              description: OK.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/MemberModel"
+          - $ref: "#/components/responses/CommonErrorResponses"
+
+  /api/v1/members/{memberCode}/loan-book:
+    post:
+      tags:
+        - Member
+      summary: Loan a book.
+      parameters:
+        - name: memberCode
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoanBookDto"
+      responses:
+        allOf:
+          - "201":
+              description: Loan created.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/LoanModel"
+          - $ref: "#/components/responses/CommonErrorResponses"
+
+  /api/v1/members/{memberCode}/return-book:
+    post:
+      tags:
+        - Member
+      summary: Return a book.
+      parameters:
+        - name: memberCode
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReturnBookDto"
+      responses:
+        allOf:
+          - "200":
+              description: Book returned.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+          - $ref: "#/components/responses/CommonErrorResponses"
+
+
+  #
+  # > Book APIs
+  #
+  /api/v1/books:
+    get:
+      tags:
+        - Book
+      summary: Get books.
+      responses:
+        allOf:
+          - "200":
+              description: OK.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BookModel"
+          - $ref: "#/components/responses/CommonErrorResponses"
+
