@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "jest --verbose --runInBand",
-    "dev": "tsc-watch --onSuccess \"node ./dist/src/main.js\"",
+    "start": "nodemon src/main.ts",
     "build": "rimraf dist && tsc",
-    "start": "node dist/src/main.js",
-    "vercel-build": "rimraf dist && tsc"
+    "postinstall": "prisma migrate dev --accept-data-loss; prisma db push --accept-data-loss",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
+    "dev": "tsc-watch --onSuccess \"node ./dist/src/main.js\"",
+    "test": "set PORT=8000&&jest --watchAll --verbose --runInBand --coverage",
+    "seed": "npx tsx seed.ts",
+    "start-gendoc": "ts-node swagger.ts"
   },
   "keywords": [],
   "author": "",
